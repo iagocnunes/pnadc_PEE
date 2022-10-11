@@ -19,16 +19,16 @@ dados_pnadc_pee <- dados_pnadc_pee[, !duplicated(colnames(dados_pnadc_pee))]
 dados_pnadc_pee <- as_tibble(dados_pnadc_pee)
 dados_pnadc_pee$idade <- ifelse(is.na(dados_pnadc_pee$idade), dados_pnadc_pee$V2009, dados_pnadc_pee$idade)
 dados_pnadc_pee$idade <- as.integer(dados_pnadc_pee$idade)
-# Dummies ***antes da calibração***
+# Dummies ***antes da calibraÃ§Ã£o***
 #2012 a 2014 [2015= V3003A e V3003]:
 dados_pnadc_pee$EF_regular2 <- ifelse(dados_pnadc_pee$V3003=="Regular do ensino fundamental",1,0)
 table(dados_pnadc_pee$EF_regular2)
-dados_pnadc_pee$EF_EJA2 <- ifelse(dados_pnadc_pee$V3003=="Educação de jovens e adultos (EJA) ou supletivo do ensino fundamental",1,0)
+dados_pnadc_pee$EF_EJA2 <- ifelse(dados_pnadc_pee$V3003=="EducaÃ§Ã£o de jovens e adultos (EJA) ou supletivo do ensino fundamental",1,0)
 table(dados_pnadc_pee$EF_EJA2)
 #2016 a 2019:
 dados_pnadc_pee$EF_regular1 <- ifelse(dados_pnadc_pee$V3003A=="Regular do ensino fundamental",1,0)
 table(dados_pnadc_pee$EF_regular1)
-dados_pnadc_pee$EF_EJA1 <- ifelse(dados_pnadc_pee$V3003A=="Educação de jovens e adultos (EJA) do ensino fundamental",1,0)
+dados_pnadc_pee$EF_EJA1 <- ifelse(dados_pnadc_pee$V3003A=="EducaÃ§Ã£o de jovens e adultos (EJA) do ensino fundamental",1,0)
 table(dados_pnadc_pee$EF_EJA1)
 
 pnadc_plano <-     
@@ -43,7 +43,7 @@ pnadc_plano <-
 df_pos <- data.frame(posest = unique(dados_pnadc_pee$posest), Freq = unique(dados_pnadc_pee$V1030))
 pnadc_calib <- postStratify(pnadc_plano, ~posest, df_pos)
 pnadc_fatores = weights(pnadc_calib) / weights(pnadc_plano)
-boxplot(pnadc_fatores, horizontal = TRUE, xlab="Fatores de calibração")
+boxplot(pnadc_fatores, horizontal = TRUE, xlab="Fatores de calibraÃ§Ã£o")
 saveRDS(pnadc_calib,"pnadc_calib_2012")
 rm(list = ls())
 
@@ -57,34 +57,34 @@ svytotal(~ one, pnadc_calib)
 #2016 a 2019:
 pop0614_est1<- svyby(~EF_regular1 + EF_EJA1, ~UF, subset(pnadc_calib,idade>=6&idade<=14), svytotal, na.rm=T)
 ftable(pop0614_est1)
-pop0614_est2 <- svyby(~V3003A=="Regular do ensino médio"|V3003A=="Educação de jovens e adultos (EJA) do ensino médio"|V3003A=="Superior - graduação"|V3003A=="Especialização de nível superior"|V3003A=="Mestrado"|V3003A=="Doutorado", ~UF, subset(pnadc_calib, idade>=6&idade<=14), svytotal, na.rm=T)
+pop0614_est2 <- svyby(~V3003A=="Regular do ensino mÃ©dio"|V3003A=="EducaÃ§Ã£o de jovens e adultos (EJA) do ensino mÃ©dio"|V3003A=="Superior - graduaÃ§Ã£o"|V3003A=="EspecializaÃ§Ã£o de nÃ­vel superior"|V3003A=="Mestrado"|V3003A=="Doutorado", ~UF, subset(pnadc_calib, idade>=6&idade<=14), svytotal, na.rm=T)
 ftable(pop0614_est2)
 #2012 a 2014 [2015=3003A e 3003]:
 pop0614_est0<- svyby(~EF_regular2 + EF_EJA2, ~UF, subset(pnadc_calib,idade>=6&idade<=14), svytotal, na.rm=T)
 ftable(pop0614_est0)
-pop0614_est3 <- svyby(~V3003=="Regular do ensino médio"|V3003=="Educação de jovens e adultos (EJA) do ensino médio"|V3003=="Superior - graduação"|V3003=="Especialização de nível superior"|V3003=="Mestrado"|V3003=="Doutorado", ~UF, subset(pnadc_calib, idade>=6&idade<=14), svytotal, na.rm=T)
+pop0614_est3 <- svyby(~V3003=="Regular do ensino mÃ©dio"|V3003=="EducaÃ§Ã£o de jovens e adultos (EJA) do ensino mÃ©dio"|V3003=="Superior - graduaÃ§Ã£o"|V3003=="EspecializaÃ§Ã£o de nÃ­vel superior"|V3003=="Mestrado"|V3003=="Doutorado", ~UF, subset(pnadc_calib, idade>=6&idade<=14), svytotal, na.rm=T)
 ftable(pop0614_est3)
 
 rm (pop0614, pop0614_est0, pop0614_est1, pop0614_est2, pop0614_est3)
 
 # META 2B
 
-# PEE: Percentual de alunos de 6 a 14 anos que concluíram essa etapa na idade recomendada #
+# PEE: Percentual de alunos de 6 a 14 anos que concluÃ­ram essa etapa na idade recomendada #
 
 #2016 a 2019:
-pop16_est <- svyby(~V3003A=="Regular do ensino médio"|V3003A=="Educação de jovens e adultos (EJA) do ensino médio"|V3003A=="Superior - graduação"|V3003A=="Especialização de nível superior"|V3003A=="Mestrado"|V3003A=="Doutorado", ~UF, subset(pnadc_calib, idade>=6&idade<=14), svytotal, na.rm=T)
+pop16_est <- svyby(~V3003A=="Regular do ensino mÃ©dio"|V3003A=="EducaÃ§Ã£o de jovens e adultos (EJA) do ensino mÃ©dio"|V3003A=="Superior - graduaÃ§Ã£o"|V3003A=="EspecializaÃ§Ã£o de nÃ­vel superior"|V3003A=="Mestrado"|V3003A=="Doutorado", ~UF, subset(pnadc_calib, idade>=6&idade<=14), svytotal, na.rm=T)
 ftable(pop0614_est)
 #2012 a 2014 [2015=3003A e 3003]:
-pop16_est0 <- svyby(~V3003=="Regular do ensino médio"|V3003=="Educação de jovens e adultos (EJA) do ensino médio"|V3003=="Superior - graduação"|V3003=="Especialização de nível superior"|V3003=="Mestrado"|V3003=="Doutorado", ~UF, subset(pnadc_calib, idade>=6&idade<=14), svytotal, na.rm=T)
+pop16_est0 <- svyby(~V3003=="Regular do ensino mÃ©dio"|V3003=="EducaÃ§Ã£o de jovens e adultos (EJA) do ensino mÃ©dio"|V3003=="Superior - graduaÃ§Ã£o"|V3003=="EspecializaÃ§Ã£o de nÃ­vel superior"|V3003=="Mestrado"|V3003=="Doutorado", ~UF, subset(pnadc_calib, idade>=6&idade<=14), svytotal, na.rm=T)
 ftable(pop0614_est0)
 rm (pop0614_est, pop0614_est0)
 
-# Relatório: percentual de jovens de 16 anos de idade que concluíram o ensino fundamental
+# RelatÃ³rio: percentual de jovens de 16 anos de idade que concluÃ­ram o ensino fundamental
 
 #2016 a 2019:
-pop16_est <- svyby(~V3003A=="Regular do ensino médio"|V3003A=="Educação de jovens e adultos (EJA) do ensino médio"|V3003A=="Superior - graduação"|V3003A=="Especialização de nível superior"|V3003A=="Mestrado"|V3003A=="Doutorado", ~UF, subset(pnadc_calib, idade==16), svytotal, na.rm=T)
+pop16_est <- svyby(~V3003A=="Regular do ensino mÃ©dio"|V3003A=="EducaÃ§Ã£o de jovens e adultos (EJA) do ensino mÃ©dio"|V3003A=="Superior - graduaÃ§Ã£o"|V3003A=="EspecializaÃ§Ã£o de nÃ­vel superior"|V3003A=="Mestrado"|V3003A=="Doutorado", ~UF, subset(pnadc_calib, idade==16), svytotal, na.rm=T)
 ftable(pop16_est)
 #2012 a 2014 [2015=3003A e 3003]:
-pop16_est0 <- svyby(~V3003=="Regular do ensino médio"|V3003=="Educação de jovens e adultos (EJA) do ensino médio"|V3003=="Superior - graduação"|V3003=="Especialização de nível superior"|V3003=="Mestrado"|V3003=="Doutorado", ~UF, subset(pnadc_calib, idade==16), svytotal, na.rm=T)
+pop16_est0 <- svyby(~V3003=="Regular do ensino mÃ©dio"|V3003=="EducaÃ§Ã£o de jovens e adultos (EJA) do ensino mÃ©dio"|V3003=="Superior - graduaÃ§Ã£o"|V3003=="EspecializaÃ§Ã£o de nÃ­vel superior"|V3003=="Mestrado"|V3003=="Doutorado", ~UF, subset(pnadc_calib, idade==16), svytotal, na.rm=T)
 ftable(pop16_est0)
 rm (pop16_est, pop16_est0)
