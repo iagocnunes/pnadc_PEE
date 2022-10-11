@@ -1,6 +1,6 @@
 <p align="center">
   <a href="http://www.ijsn.es.gov.br/">
-    <img src="../Logo_IJSN-Brasao-SEP_Horizontal-color.png" width="940" alt="Instituto Jones dos Santos Neves">
+    <img src="../../Logo_IJSN-Brasao-SEP_Horizontal-color.png" width="940" alt="Instituto Jones dos Santos Neves">
   </a>
 </p>
 
