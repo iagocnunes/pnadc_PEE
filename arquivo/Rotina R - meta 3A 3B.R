@@ -19,16 +19,16 @@ dados_pnadc_pee <- dados_pnadc_pee[, !duplicated(colnames(dados_pnadc_pee))]
 dados_pnadc_pee <- as_tibble(dados_pnadc_pee)
 dados_pnadc_pee$idade <- ifelse(is.na(dados_pnadc_pee$idade), dados_pnadc_pee$V2009, dados_pnadc_pee$idade)
 dados_pnadc_pee$idade <- as.integer(dados_pnadc_pee$idade)
-# Dummies ***antes da calibração***
+# Dummies ***antes da calibraÃ§Ã£o***
 #2016 a 2019:
-dados_pnadc_pee$EM_regular1 <- ifelse(dados_pnadc_pee$V3003A=="Regular do ensino médio",1,0)
+dados_pnadc_pee$EM_regular1 <- ifelse(dados_pnadc_pee$V3003A=="Regular do ensino mÃ©dio",1,0)
 table(dados_pnadc_pee$EM_regular1)
-dados_pnadc_pee$EM_EJA1 <- ifelse(dados_pnadc_pee$V3003A=="Educação de jovens e adultos (EJA) do ensino médio",1,0)
+dados_pnadc_pee$EM_EJA1 <- ifelse(dados_pnadc_pee$V3003A=="EducaÃ§Ã£o de jovens e adultos (EJA) do ensino mÃ©dio",1,0)
 table(dados_pnadc_pee$EM_EJA1)
 #2012 a 2014 [2015=3003A e 3003]:
-dados_pnadc_pee$EM_regular2 <- ifelse(dados_pnadc_pee$V3003=="Regular do ensino médio",1,0)
+dados_pnadc_pee$EM_regular2 <- ifelse(dados_pnadc_pee$V3003=="Regular do ensino mÃ©dio",1,0)
 table(dados_pnadc_pee$EM_regular2)
-dados_pnadc_pee$EM_EJA2 <- ifelse(dados_pnadc_pee$V3003=="Educação de jovens e adultos (EJA) ou supletivo do ensino médio",1,0)
+dados_pnadc_pee$EM_EJA2 <- ifelse(dados_pnadc_pee$V3003=="EducaÃ§Ã£o de jovens e adultos (EJA) ou supletivo do ensino mÃ©dio",1,0)
 table(dados_pnadc_pee$EM_EJA2)
 
 pnadc_plano <-     
@@ -43,7 +43,7 @@ pnadc_plano <-
 df_pos <- data.frame(posest = unique(dados_pnadc_pee$posest), Freq = unique(dados_pnadc_pee$V1030))
 pnadc_calib <- postStratify(pnadc_plano, ~posest, df_pos)
 pnadc_fatores = weights(pnadc_calib) / weights(pnadc_plano)
-boxplot(pnadc_fatores, horizontal = TRUE, xlab="Fatores de calibração")
+boxplot(pnadc_fatores, horizontal = TRUE, xlab="Fatores de calibraÃ§Ã£o")
 saveRDS(pnadc_calib,"pnadc_calib_2012")
 rm(list = ls())
 
@@ -53,7 +53,7 @@ options(scipen=999)
 svytotal(~ one, pnadc_calib)
 
 # META 3A
-pop1517_est <- svyby(~VD3004=="Médio completo ou equivalente"|VD3004=="Superior incompleto ou equivalente"|VD3004=="Superior completo", ~UF, subset(pnadc_calib, idade>=15&idade<=17), svytotal, na.rm=T)
+pop1517_est <- svyby(~VD3004=="MÃ©dio completo ou equivalente"|VD3004=="Superior incompleto ou equivalente"|VD3004=="Superior completo", ~UF, subset(pnadc_calib, idade>=15&idade<=17), svytotal, na.rm=T)
 ftable(pop1517_est)
 pop1517_est1<- svyby(~V3002=="Sim", ~UF, subset(pnadc_calib,idade>=15&idade<=17), svytotal, na.rm=T)
 ftable(pop1517_est1)
@@ -67,6 +67,6 @@ ftable(pop1517_est1)
 pop1517_est0<- svyby(~EM_regular2 + EM_EJA2, ~UF, subset(pnadc_calib,idade>=15&idade<=17), svytotal, na.rm=T)
 ftable(pop1517_est0)
 
-pop1517_est2 <- svyby(~VD3004=="Médio completo ou equivalente"|VD3004=="Superior incompleto ou equivalente"|VD3004=="Superior completo", ~UF, subset(pnadc_calib, idade>=15&idade<=17), svytotal, na.rm=T)
+pop1517_est2 <- svyby(~VD3004=="MÃ©dio completo ou equivalente"|VD3004=="Superior incompleto ou equivalente"|VD3004=="Superior completo", ~UF, subset(pnadc_calib, idade>=15&idade<=17), svytotal, na.rm=T)
 ftable(pop1517_est2)
 rm (pop1517_est1, pop1517_est2, pop1517_est0)
