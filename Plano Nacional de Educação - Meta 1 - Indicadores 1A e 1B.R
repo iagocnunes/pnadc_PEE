@@ -21,6 +21,7 @@ pnadc_plano <- pnadc_design(dados_pnadc)
 rm(dados_pnadc)
 options(scipen=999)
 
+# validar expansão da amostra https://painel.ibge.gov.br/pnadc/
 svytotal(~ one, pnadc_plano, na.rm=T)
 
 # META 1A
