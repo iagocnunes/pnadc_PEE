@@ -6,7 +6,7 @@
 
 ## Acompanhamento do Plano Estadual de Educação - Espírito Santo
 
-Aqui estão armazenadas rotinas de extração de dados em R para o acompanhamento de alguns indicadores do Plano Estadual de Educação.<br>
-Na pasta "arquivo" estão os scripts antigos, criados por mim logo quando aprendi a mexer no R.<br>
-Estou criando novos scripts automatizados.
+Aqui estão armazenadas rotinas de extração de dados em R para o acompanhamento de alguns indicadores do Plano Estadual de Educação.
+Na pasta "arquivo" estão os scripts antigos, criados por mim logo quando aprendi a mexer no R.
+Os novos scripts automatizados estão em construção.
 
