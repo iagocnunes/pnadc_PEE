@@ -6,23 +6,56 @@ options(survey.lonely.psu = "adjust")
 options(OutDec=",")
 library(tidyverse);library(PNADcIBGE);library(survey);library(srvyr);library(openxlsx)
 
-dados_pnadc <- read_pnadc ("PNADC_2019_trimestre2.txt", "input_PNADC_trimestre2_20220801.txt")
-dados_pnadc <- pnadc_labeller (dados_pnadc,
+dados1_pnadc <- read_pnadc ("PNADC_2019_trimestre2.txt", "input_PNADC_trimestre2_20220801.txt")
+dados1_pnadc <- pnadc_labeller (dados1_pnadc,
                                "dicionario_PNADC_microdados_trimestre2_20220801.xls")
-dados_pnadc$one <- 1
+dados2_pnadc <- read_pnadc ("PNADC_2018_trimestre2.txt", "input_PNADC_trimestre2_20220801.txt")
+dados2_pnadc <- pnadc_labeller (dados2_pnadc,
+                               "dicionario_PNADC_microdados_trimestre2_20220801.xls")
+dados3_pnadc <- read_pnadc ("PNADC_2017_trimestre2.txt", "input_PNADC_trimestre2_20220801.txt")
+dados3_pnadc <- pnadc_labeller (dados3_pnadc,
+                               "dicionario_PNADC_microdados_trimestre2_20220801.xls")
+dados4_pnadc <- read_pnadc ("PNADC_2016_trimestre2.txt", "input_PNADC_trimestre2_20220801.txt")
+dados4_pnadc <- pnadc_labeller (dados4_pnadc,
+                               "dicionario_PNADC_microdados_trimestre2_20220801.xls")
 
-dados_pnadc <- dados_pnadc %>%
-  mutate(data_nasc = as.Date(paste0(V2008, "/", V20081, "/", V20082), format = "%d/%m/%Y"),
-         idade = as.integer(as.Date("31/03/2019", format = "%d/%m/%Y") - data_nasc) / 365.25,
-         idade = ifelse(is.na(idade), V2009, idade),
-         idade = as.integer(idade))
+dados_names <- c("dados1_pnadc","dados2_pnadc","dados3_pnadc","dados4_pnadc")
 
-pnadc_plano <- pnadc_design(dados_pnadc)
-rm(dados_pnadc)
+for(dados_name in dados_names){
+  get(dados_name) %>%
+    mutate(one = 1,
+           data_nasc = as.Date(paste0(V2008, "/", V20081, "/", V20082), format = "%d/%m/%Y"),
+           idade = as.integer(as.Date(paste0("31", "/", "03", "/", Ano), format = "%d/%m/%Y") - data_nasc) / 365.25,
+           idade = ifelse(is.na(idade), V2009, idade),
+           idade = as.integer(idade)) %>%
+    pnadc_design() %>% 
+    assign(value = .,
+           x = dados_name,
+           envir = globalenv())
+}
+
+
+rm(dados_name)
 options(scipen=999)
 
+Moda <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+for(dados_name in dados_names){
+  get(dados_name) %>%
+    as_survey(weights = c(V1028)) %>% 
+    summarize(ano=Moda(Ano), br_total = survey_total(one, na.rm=T)) %>%
+    assign(value = .,
+           x = paste0(dados_name,'_out'),
+           envir = globalenv())
+}
+
 # validar expansão da amostra https://painel.ibge.gov.br/pnadc/
-svytotal(~ one, pnadc_plano, na.rm=T)
+svytotalBR <- do.call(rbind, mget(ls(pattern="_out")))
+
+rm(list = ls(pattern="_out"))
 
 # META 1A
 pop0405_est <- svyby(~V3002=="Sim", ~UF, subset(pnadc_plano, idade >= 4 & idade <= 5), svytotal, na.rm = T)
